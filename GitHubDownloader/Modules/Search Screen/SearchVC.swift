@@ -96,7 +96,7 @@ extension SearchViewController {
     @IBAction func downloadButtonAction(_ sender: UIButton) {
         presenter.viewRequested(linkTappedForCellAt: sender.tag)
         // TODO: Remove it
-        sender.tintColor = .gray
+        sender.isEnabled = false
     }
     
 }

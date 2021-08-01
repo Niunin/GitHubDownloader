@@ -41,7 +41,7 @@ class SearchCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-        downloadButton.tintColor = UIColor.systemBlue
+        downloadButton.isEnabled = true
     }
     
     // MARK: conigure

@@ -63,7 +63,7 @@ private extension NetworkService {
     
     func makeQuery(_ query: String?) -> [URLQueryItem] {
         return [
-            URLQueryItem(name: "q", value: query),
+            URLQueryItem(name: "q", value: "user:\(query!)"),
             URLQueryItem(name: "per_page", value: "30"),
             URLQueryItem(name: "page", value: "1"),
         ]
