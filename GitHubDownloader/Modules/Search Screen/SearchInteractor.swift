@@ -10,8 +10,8 @@ import Foundation
 // MARK: Object
 
 class SearchInteractor: SearchInteractorProtocol {
-  
     
+    // MARK: properties
     
     var dataManager: SearchDataManagerProtocol!
     var presenter: SearchPresenterProtocol!
@@ -23,9 +23,12 @@ class SearchInteractor: SearchInteractorProtocol {
     // MARK: viper interactor protocol conformance
     
     func implement(searchWith query: String?) {
+        guard let query = query else { return }
+        if query.isEmpty { return }
+        
         networkManager.requestData(withSearchQuery: query) { [weak self] jsonData, error in
             if let error = error {
-                print(" FetchDataError")
+                print(" ER1: " + String(describing: error))
             } else {
                 let searchResult = self?.getSearchResults(from: jsonData)
                 DispatchQueue.main.async {
@@ -39,14 +42,13 @@ class SearchInteractor: SearchInteractorProtocol {
     
     func implement(downloadForCellWith index: Int) {
         let name = catalog[index].fullreponame
+        
         networkManager.requestRepoFile(repoFullName: name) { [weak self] data, error in
             if let error = error {
-                print(" DT4: " + String.init(describing: error))
+                print(" ER4: " + String(describing: error))
             } else {
-                
                 guard let item = self?.catalog[index] else { return }
                 self?.downloaded.append(item)
-                
                 let defaults = UserDefaults.standard
                 defaults.set(try? PropertyListEncoder().encode(self?.downloaded), forKey: "Downloaded")
             }
@@ -59,13 +61,13 @@ class SearchInteractor: SearchInteractorProtocol {
 
 private extension SearchInteractor {
     
-    private func getSearchResults(from jsonData: Data?) -> [SearchEntity] {
+    func getSearchResults(from jsonData: Data?) -> [SearchEntity] {
         let searchResultData = parseJson(jsonData)
         let searchResultModel = translateToSearchEntity(from: searchResultData)
         return searchResultModel
     }
-        
-    private func parseJson(_ jsonData: Data?) -> SearchNetworkModel? {
+    
+    func parseJson(_ jsonData: Data?) -> SearchNetworkModel? {
         guard let data = jsonData else { return nil }
         do {
             return try JSONDecoder().decode(SearchNetworkModel.self, from: data)
@@ -75,15 +77,13 @@ private extension SearchInteractor {
         }
     }
     
-    
-    private func translateToSearchEntity(from data: SearchNetworkModel?) -> [SearchEntity] {
+    func translateToSearchEntity(from data: SearchNetworkModel?) -> [SearchEntity] {
         guard let data = data else { return [] }
         return data.items.map{ SearchEntity(from: $0) }
     }
     
-    private func handleCompletionError(error: Error) {
-        Swift.debugPrint(" " + String(describing: error))
-        
+    func handleCompletionError(error: Error) {
+        print(" ER3" + String(describing: error))
     }
     
 }

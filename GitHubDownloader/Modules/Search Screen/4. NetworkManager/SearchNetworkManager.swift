@@ -25,6 +25,7 @@ enum NetworkManagerError: Error {
 class NetworkService {
     
     // MARK: properties
+    
     let session = URLSession(configuration: .default)
     
     // MARK: request
@@ -49,7 +50,7 @@ class NetworkService {
     
 }
 
-// MARK: - Factories
+// MARK: - Components
 
 private extension NetworkService {
     
@@ -84,8 +85,7 @@ private extension NetworkService {
     }
     
     func makeRequest(with url: URL) -> URLRequest {
-        var request = URLRequest(url: url)
-        //        request.addValue("Client-ID \(key)", forHTTPHeaderField: "Authorization")
+        let request = URLRequest(url: url)
         return request
     }
     
@@ -114,28 +114,30 @@ private extension NetworkService {
     
     func makeDownloadTask(repoURL: URL, completion: @escaping (Data?, Error?) -> Void) -> URLSessionDownloadTask {
         let downloadTask = URLSession.shared.downloadTask(with: repoURL) { localUrl, response, error in
-
+            // Checking for error message abscence
             if let error = error as NSError? {
                 completion(nil, error)
                 return
             }
+            // Checking for succesfull 2xx response
             let response = response as! HTTPURLResponse
             guard (200...299).contains(response.statusCode) else {
                 completion(nil, NetworkManagerError.badResponse(response))
                 return
             }
+            // Checking for data presence
             guard let localUrl = localUrl else {
                 completion(nil, NetworkManagerError.badLocalUrl)
                 return
             }
+            // Checking file extension
             guard response.mimeType == "application/zip" else {
                 completion(nil, NetworkManagerError.badFileExtension)
                 return
             }
-            
+            // Everything is OK
             do {
                 let directory = try FileManager.default.url(for: .documentDirectory  , in: .userDomainMask, appropriateFor: nil, create: true) .appendingPathComponent(response.suggestedFilename ?? "Unnamed")
-                
                 try? FileManager.default.removeItem(at: directory)
                 try FileManager.default.copyItem(at: localUrl, to: directory)
                 completion(nil, nil)

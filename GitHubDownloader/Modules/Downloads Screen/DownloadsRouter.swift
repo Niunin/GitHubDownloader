@@ -32,7 +32,6 @@ class DownloadsRouter: DownloadsRouterProtocol {
         presenter.interactor = interactor
         
         return view
-        
     }
     
     // MARK: viper router protocol conformance

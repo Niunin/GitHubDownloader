@@ -54,16 +54,25 @@ private extension DownloadsViewController {
         let navBarItem = UIBarButtonItem(title: "Clear", style: .plain , target: self, action: #selector(clear))
         navBarItem.tintColor = .systemBlue
         
+        let backBarItem = UIBarButtonItem(title: "Back", style: .plain , target: self, action: #selector(dismissAction))
+        backBarItem.tintColor = .systemBlue
+        
+        
         navigationItem.rightBarButtonItems = [navBarItem]
+        navigationItem.leftBarButtonItems = [backBarItem]
     }
     
     @IBAction private func clear(){
         presenter.viewButtonPressedclear()
     }
     
+    @IBAction private func dismissAction() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
 }
 
-// MARK: - UICollectionView DataSource
+// MARK: - UITableView DataSource
 
 extension DownloadsViewController {
     
@@ -73,22 +82,9 @@ extension DownloadsViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: DownloadsCell.reuseIdentifier, for: indexPath)
-
-
         cell.textLabel?.text = catalog[indexPath.row].reponame
         cell.detailTextLabel?.text = catalog[indexPath.row].username
-//        let cell = tableView.dequeueReusableCell(withIdentifier: DownloadsCell.reuseIdentifier, for: indexPath) as! DownloadsCell
-        
-//        cell.configure(cell, model: catalog[indexPath.row])
         return cell
     }
     
-}
-
-// MARK: - UICollectionView Delegate
-
-extension DownloadsViewController {
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    }
 }

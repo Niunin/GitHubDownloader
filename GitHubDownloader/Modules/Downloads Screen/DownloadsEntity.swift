@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 // MARK: - Data Structure
 
 struct DownloadsEntity: Codable {

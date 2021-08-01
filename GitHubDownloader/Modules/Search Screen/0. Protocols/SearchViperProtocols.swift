@@ -64,6 +64,4 @@ protocol SearchInteractorProtocol: AnyObject {
 // MARK: - DataManager Protocol
 
 protocol SearchDataManagerProtocol: AnyObject {
-
-    
 }

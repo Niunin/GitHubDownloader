@@ -10,9 +10,7 @@ import UIKit
 // MARK: - Object
 
 class SearchViewController: UITableViewController, SearchViewProtocol {
-    
-    
-    
+
     // MARK: properties
     
     var presenter: SearchPresenterProtocol!
@@ -30,7 +28,11 @@ class SearchViewController: UITableViewController, SearchViewProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationController()
+        if #available(iOS 13.0, *) {
+            setupNavigationController()
+        } else {
+            setupNavigationControllerOld()
+        }
         setupTableView()
     }
     
@@ -46,8 +48,9 @@ class SearchViewController: UITableViewController, SearchViewProtocol {
 
 }
 
+// MARK: - Setup Views
+
 private extension SearchViewController {
-    // MARK: setup views
     
     func setupTableView() {
         tableView.register(SearchCell.self, forCellReuseIdentifier: SearchCell.reuseIdentifier)
@@ -56,8 +59,10 @@ private extension SearchViewController {
         tableView.tableFooterView = UIView()
     }
     
+    @available(iOS 13.0, *)
     func setupNavigationController() {
         self.navigationController?.navigationBar.tintColor = UIColor.white
+    
         navigationItem.searchController = searchController
         searchController.automaticallyShowsCancelButton = false
         navigationItem.searchController?.searchBar.delegate = self
@@ -75,9 +80,20 @@ private extension SearchViewController {
         presenter.viewButtonPressedDownloads()
     }
     
+    func setupNavigationControllerOld () {
+        self.navigationController?.navigationBar.tintColor = UIColor.white
+        tableView.tableHeaderView = searchController.searchBar
+        searchController.searchBar.delegate = self
+        
+        let navBarItem = UIBarButtonItem(title: "saved", style: .plain , target: self, action: #selector(showDownloads))
+        navBarItem.tintColor = .systemBlue
+
+        navigationItem.rightBarButtonItems = [navBarItem]
+    }
+    
 }
 
-// MARK: - UICollectionView DataSource
+// MARK: - UITableView DataSource
 
 extension SearchViewController {
     
@@ -101,25 +117,15 @@ extension SearchViewController {
     
 }
 
-// MARK: - UICollectionView Delegate
-
-extension SearchViewController {
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        presenter.viewRequested(linkTappedForCellAt: indexPath)
-    }
-    
-}
-
 // MARK: - UISearchBar Delegate
 
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
         presenter.viewRequested(newSearchWith: searchBar.text)
-        searchController.dismiss(animated: true, completion: nil)
-
-        searchBar.resignFirstResponder()
+        if #available(iOS 13.0, *) {
+            searchController.dismiss(animated: true, completion: nil)
+        }
         return true
     }
     

@@ -13,7 +13,6 @@ class SearchCell: UITableViewCell {
     
     static let reuseIdentifier = "search-table-view-cell"
     
-    
     // MARK: properties
     
     // Views
@@ -23,7 +22,6 @@ class SearchCell: UITableViewCell {
     let stackHorizontal = UIStackView()
     let stackVertical = UIStackView()
     
-
     // Constraints
     private lazy var repoLabelHeight = repoNameLabel.heightAnchor.constraint(equalToConstant: 0)
     let largeFont = UIFont.preferredFont(forTextStyle: .title3 )
@@ -37,7 +35,6 @@ class SearchCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-        
     }
     
     override func prepareForReuse() {
@@ -47,17 +44,16 @@ class SearchCell: UITableViewCell {
     // MARK: conigure
     
     func configure(_ cell: SearchCell, model: SearchEntity) {
-        userNameLabel.text = model.username
         let title = model.reponame
         let link = model.link
         let fullRange = NSRange(location: 0, length: title.count)
-        
         
         let repoLink = NSMutableAttributedString(string: title)
         repoLink.addAttribute(.link, value: link, range: fullRange)
         repoLink.addAttribute(.font, value: largeFont, range: fullRange)
         repoLink.addAttribute(.underlineStyle , value: NSUnderlineStyle.single.rawValue, range: fullRange)
         
+        userNameLabel.text = model.username
         repoNameLabel.attributedText = repoLink
         repoLabelHeight.constant = largeFont.lineHeight+13
     }
@@ -72,7 +68,11 @@ private extension SearchCell {
         setupSelf()
         setupStackHorizontal(stackHorizontal)
         setupStackVertical(stackVertical)
-        setupButton(downloadButton)
+        if #available(iOS 13.0, *) {
+            setupButton(downloadButton)
+        } else {
+            setupButtonOld(downloadButton)
+        }
         setupRepoNameLabel(repoNameLabel)
         setupUserNameLabel(userNameLabel)
         setupConstraints()
@@ -116,12 +116,18 @@ private extension SearchCell {
         label.font = UIFont.preferredFont(forTextStyle: .body)
     }
     
+    @available(iOS 13.0, *)
     func setupButton(_ button: UIButton) {
         let configuration = UIImage.SymbolConfiguration(font: largeFont)
         let image = UIImage(systemName: "icloud.and.arrow.down", withConfiguration: configuration)!
 
         button.setImage(image, for: .normal)
         button.tintColor = UIColor.systemBlue
+    }
+    
+    func setupButtonOld(_ button: UIButton) {
+        button.setTitle("save", for: .normal)
+        button.setTitleColor(UIColor.systemBlue, for: .normal)
     }
         
     func setupConstraints() {
@@ -138,7 +144,7 @@ private extension SearchCell {
             downloadButton.heightAnchor.constraint(equalToConstant: 40),
             downloadButton.widthAnchor.constraint(equalToConstant: 40),
             
-            mg.bottomAnchor.constraint(equalToSystemSpacingBelow: stackHorizontal.bottomAnchor, multiplier: 1)
+            mg.bottomAnchor.constraint(equalTo: stackHorizontal.bottomAnchor, constant: 8)
         ])
     }
     

@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: Object
+// MARK: - Object
 
 class DownloadsPresenter: DownloadsPresenterProtocol {
     

@@ -39,6 +39,7 @@ protocol DownloadsPresenterProtocol: AnyObject {
     
     func viewButtonPressedclear()
     func interactorUpdatedData(_ data: [DownloadsEntity])
+    
 }
 
 // MARK: - Interactor Protocol
@@ -46,15 +47,8 @@ protocol DownloadsPresenterProtocol: AnyObject {
 protocol DownloadsInteractorProtocol: AnyObject {
 
     var presenter: DownloadsPresenterProtocol! { get set }
-    var dataManager: DownloadsDataManagerProtocol! { get set }
 
     func updateData()
     func clear()
-}
-
-// MARK: - DataManager Protocol
-
-protocol DownloadsDataManagerProtocol: AnyObject {
-
     
 }

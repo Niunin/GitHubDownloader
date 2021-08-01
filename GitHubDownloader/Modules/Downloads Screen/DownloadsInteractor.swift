@@ -7,11 +7,10 @@
 
 import Foundation
 
-// MARK: Object
+// MARK: - Object
 
 class DownloadsInteractor: DownloadsInteractorProtocol {
     
-    var dataManager: DownloadsDataManagerProtocol!
     var presenter: DownloadsPresenterProtocol!
     
     var downloaded: [DownloadsEntity] = []

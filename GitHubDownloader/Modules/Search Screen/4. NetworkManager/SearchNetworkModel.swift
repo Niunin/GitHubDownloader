@@ -17,12 +17,11 @@ struct SearchNetworkModel: Codable {
     
 }
 
-// MARK: - Item
+// MARK: - Item DataStructure
 
 struct Item: Codable {
    
     let id: Int
-    
     let name, full_name: String
     let owner: Owner
     let html_url: String

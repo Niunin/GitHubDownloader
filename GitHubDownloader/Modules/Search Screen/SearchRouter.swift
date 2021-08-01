@@ -32,7 +32,6 @@ class SearchRouter: SearchRouterProtocol {
         presenter.interactor = interactor
         
         return view
-        
     }
     
     // MARK: viper router protocol conformance
